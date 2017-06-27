@@ -82,6 +82,8 @@ x = np.vstack((car_features, notcar_features)).astype(np.float64)
 
 x_scaler = StandardScaler().fit(x)
 
+joblib.dump(x_scaler,'x_scaler_save1.pkl')
+
 scaled_x = x_scaler.transform(x)
 
 y = np.hstack((np.ones(len(car_features)), np.zeros(len(notcar_features))))
