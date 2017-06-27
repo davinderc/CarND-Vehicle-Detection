@@ -11,6 +11,7 @@ from skimage.feature import hog
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.externals import joblib
 from lessonFunctions import *
 
 v_dir = "vehicles/"
@@ -98,6 +99,8 @@ t=time.time()
 svc.fit(x_train,y_train)
 print(round(time.time() - t, 2), ' seconds to train SVC...')
 print('Test accuracy of SVC: ', round(svc.score(x_test, y_test),4))
+
+joblib.dump(svc,'svc_model1.pkl')
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
 #titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
