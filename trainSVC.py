@@ -19,6 +19,8 @@ nv_dir = "non-vehicles/"
 v_subdir = os.listdir(v_dir)
 nv_subdir = os.listdir(nv_dir)
 
+#print(v_subdir)
+#print(nv_subdir)
 cars = []
 notcars = []
 
@@ -36,8 +38,8 @@ with open("notcars.txt", 'w') as f:
     for fn in notcars:
         f.write(fn+'\n')
 
-car_i = np.random.randint(0,len(cars))
-notcar_i = np.random.randint(0,len(cars))
+#car_i = np.random.randint(0,len(cars))
+#notcar_i = np.random.randint(0,len(cars))
 
 #car_image = mpimg.imread(cars[car_i])
 #notcar_image = mpimg.imread(notcars[notcar_i])
@@ -46,13 +48,13 @@ notcar_i = np.random.randint(0,len(cars))
 #print(type(car_image[0][0][0]))
 #feature_image = cv2.cvtColor(car_image, cv2.COLOR_RGB2LUV)
 
-color_space = 'YUV'
+color_space = 'LUV'
 orient = 9
 pix_per_cell = 8
 cell_per_block = 2
 hog_channel = 'ALL'
 spatial_size = (32,32)
-hist_bins = 32
+hist_bins = 16
 spatial_feat = True
 hist_feat = True
 hog_feat = True
@@ -71,10 +73,30 @@ car_features = extract_features(test_cars, color_space, spatial_size, hist_bins,
 
 notcar_features = extract_features(test_notcars, color_space, spatial_size, hist_bins, orient, pix_per_cell, cell_per_block, hog_channel, spatial_feat, hist_feat, hog_feat)
 
-print(time.time()-t, 'seconds to compute features' )
+print(round(time.time() - t, 2), 'seconds to compute features' )
 
+x = np.vstack((car_features, notcar_features)).astype(np.float64)
+
+x_scaler = StandardScaler().fit(x)
+
+scaled_x = x_scaler.transform(x)
+
+y = np.hstack((np.ones(len(car_features)), np.zeros(len(notcar_features))))
+
+random_state = np.random.randint(0,100)
+
+x_train, x_test, y_train, y_test = train_test_split(scaled_x, y, test_size=0.1, random_state = random_state)
+
+print('Using ', orient, ' orientations, ', pix_per_cell, ' pixels per cell, ', cell_per_block, ' cells per block, ', hist_bins, ' histogram bins, and ', spatial_size, ' spatial sampling.')
+print('Feature vector length: ', len(x_train[0]))
+
+svc = LinearSVC()
+
+t=time.time()
+svc.fit(x_train,y_train)
+print(round(time.time() - t, 2), ' seconds to train SVC...')
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
-titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
+#titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
 #fig = plt.figure(figsize=(12,3))
 # plt.ion()

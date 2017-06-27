@@ -31,11 +31,11 @@ def bin_spatial(img, size=(32, 32)):
 
 # Define a function to compute color histogram features
 # NEED TO CHANGE bins_range if reading .png files with mpimg!
-def color_hist(img, nbins=32, bins_range=(0, 256)):
+def color_hist(img, nbins=32):
     # Compute the histogram of the color channels separately
-    channel1_hist = np.histogram(img[:,:,0], bins=nbins, range=bins_range)
-    channel2_hist = np.histogram(img[:,:,1], bins=nbins, range=bins_range)
-    channel3_hist = np.histogram(img[:,:,2], bins=nbins, range=bins_range)
+    channel1_hist = np.histogram(img[:,:,0], bins=nbins)
+    channel2_hist = np.histogram(img[:,:,1], bins=nbins)
+    channel3_hist = np.histogram(img[:,:,2], bins=nbins)
     # Concatenate the histograms into a single feature vector
     hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
     # Return the individual histograms, bin_centers and feature vector
@@ -48,14 +48,14 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
                         pix_per_cell=8, cell_per_block=2, hog_channel=0,
                         spatial_feat=True, hist_feat=True, hog_feat=True):
     # Create a list to append feature vectors to
-    file_features = []
+    #file_features = []
     features = []
     # Iterate through the list of images
     #print(imgs.shape)
     for img_file in imgs:
-        img_features = []
+        file_features = []
         # Read in each one by one
-        image = mpimg.imread(img_file)
+        image = cv2.imread(img_file)
         # apply color conversion if other than 'RGB'
         if color_space != 'RGB':
             if color_space == 'HSV':
@@ -72,6 +72,7 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
 
         if spatial_feat == True:
             spatial_features = bin_spatial(feature_image, size=spatial_size)
+            #print(np.max(spatial_features))
             file_features.append(spatial_features)
         if hist_feat == True:
             # Apply color_hist()
@@ -93,6 +94,7 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
             file_features.append(hog_features)
         features.append(np.concatenate(file_features))
     # Return list of feature vectors
+    #print(np.max(features))
     return features
 
 # Define a function that takes an image,
