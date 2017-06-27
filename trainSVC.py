@@ -53,8 +53,8 @@ orient = 9
 pix_per_cell = 8
 cell_per_block = 2
 hog_channel = 'ALL'
-spatial_size = (32,32)
-hist_bins = 16
+spatial_size = (24,24)
+hist_bins = 24
 spatial_feat = True
 hist_feat = True
 hog_feat = True
@@ -64,10 +64,12 @@ hog_feat = True
 
 
 t = time.time()
-n_samples = 1000
-random_i = np.random.randint(0,len(cars),n_samples)
-test_cars = np.array(cars)[random_i]
-test_notcars = np.array(notcars)[random_i]
+n_samples_cars = len(cars)
+n_samples_notcars = len(notcars)
+random_i_c = np.random.randint(0,len(cars),n_samples_cars)
+random_i_nc = np.random.randint(0,len(cars),n_samples_notcars)
+test_cars = np.array(cars)[random_i_c]
+test_notcars = np.array(notcars)[random_i_nc]
 
 car_features = extract_features(test_cars, color_space, spatial_size, hist_bins, orient, pix_per_cell, cell_per_block, hog_channel, spatial_feat, hist_feat, hog_feat)
 
@@ -95,6 +97,7 @@ svc = LinearSVC()
 t=time.time()
 svc.fit(x_train,y_train)
 print(round(time.time() - t, 2), ' seconds to train SVC...')
+print('Test accuracy of SVC: ', round(svc.score(x_test, y_test),4))
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
 #titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
