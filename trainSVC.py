@@ -82,7 +82,7 @@ x = np.vstack((car_features, notcar_features)).astype(np.float64)
 
 x_scaler = StandardScaler().fit(x)
 
-joblib.dump(x_scaler,'x_scaler_save1.pkl')
+joblib.dump(x_scaler,'x_scaler_save2.pkl')
 
 scaled_x = x_scaler.transform(x)
 
@@ -102,7 +102,7 @@ svc.fit(x_train,y_train)
 print(round(time.time() - t, 2), ' seconds to train SVC...')
 print('Test accuracy of SVC: ', round(svc.score(x_test, y_test),4))
 
-joblib.dump(svc,'svc_model1.pkl')
+joblib.dump(svc,'svc_model2.pkl')
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
 #titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
