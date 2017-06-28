@@ -182,6 +182,7 @@ def draw_labeled_bboxes(img, labels):
         # Find pixels with each car_number label value
         #print('carnum:',car_number)
         nonzero = (labels[0] == car_number).nonzero()
+        #print('nonzero: ',nonzero)
         # Identify x and y values of those pixels
         nonzeroy = np.array(nonzero[0])
         nonzerox = np.array(nonzero[1])

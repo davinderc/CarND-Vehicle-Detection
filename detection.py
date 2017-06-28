@@ -3,12 +3,15 @@ from slidingWindow import *
 from search_wins import *
 from scipy.ndimage.measurements import label
 import time
+import collections
 
 class VehicleTrack:
     def __init__(self,frame_size):
         self.heatmap = np.zeros(frame_size)
         self.frames = []
 vehicles = VehicleTrack((720,1280))
+
+heatmaps = collections.deque(maxlen=14)
 
 #vehicles96 = VehicleTrack((96,86))
 #vehicles64 = VehicleTrack((64,64))
@@ -45,25 +48,27 @@ def det_pipeline(img):
     heat = np.zeros_like(img[:,:,0]).astype(np.float)
 
     heat_map = add_heat(heat,hot_wins)
+    heatmaps.append(heat_map)
+    heatmap_sum = sum(heatmaps)
+    thresh_heat = apply_threshold(heatmap_sum, 7)
+    labels = label(thresh_heat)
 
-    #heat_map = apply_threshold(heat_map, 3)
+    #n_frame_factor = 0.25
+    #vehicles.heatmap = n_frame_factor*heat_map + (1 - n_frame_factor)*vehicles.heatmap
+    #vehicles.heatmap = apply_threshold(vehicles.heatmap, 2)
 
-    n_frame_factor = 0.25
-    vehicles.heatmap = n_frame_factor*heat_map + (1 - n_frame_factor)*vehicles.heatmap
-    vehicles.heatmap = apply_threshold(vehicles.heatmap, 2)
-
-    n_frames_avg = 14
-    vehicles.frames.append(heat_map)
-    if(len(vehicles.frames)>=14):
-        avg_frame = np.mean(np.array(vehicles.frames)[-n_frames_avg], axis = -1)
-    else:
-        avg_frame = vehicles.heatmap
-    labels = label(avg_frame)
-    if(labels is not None):
-        draw_img = draw_labeled_bboxes(np.copy(img),labels)
-    else:
-        labels = label(vehicles.heatmap)
-        draw_img = draw_labeled_bboxes(np.copy(img),labels)
+    #n_frames_avg = 14
+    #vehicles.frames.append(heat_map)
+    #if(len(vehicles.frames)>=14):
+    #    avg_frame = np.mean(np.array(vehicles.frames)[-n_frames_avg], axis = -1)
+    #else:
+    #    avg_frame = vehicles.heatmap
+    #labels = label(avg_frame)
+    #if(labels is not None):
+    #    draw_img = draw_labeled_bboxes(np.copy(img),labels)
+    #else:
+        #labels = label(vehicles.heatmap)
+    draw_img = draw_labeled_bboxes(np.copy(img),labels)
     #window_img = draw_boxes(draw_img, labels, color=(0,0,255), thick=6)
 
     #print(round(time.time() - t1,2),' seconds per image. Searching ', len(windows), ' windows.')
