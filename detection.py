@@ -4,13 +4,22 @@ from search_wins import *
 from scipy.ndimage.measurements import label
 import time
 
-def det_pipeline(img):
+class VehicleTrack:
+    def __init__(self,frame_size):
+        self.heatmap = np.zeros(frame_size)
+        self.frames = []
+vehicles = VehicleTrack((720,1280))
 
+#vehicles96 = VehicleTrack((96,86))
+#vehicles64 = VehicleTrack((64,64))
+
+def det_pipeline(img):
+    #print(img.shape)
     ## Standard scaler, parameters, and SVC model
-    x_scaler = joblib.load('x_scaler_save1.pkl')
-    color_space = 'LUV'
-    orient = 10
-    pix_per_cell = 10
+    x_scaler = joblib.load('x_scaler_save4.pkl')
+    color_space = 'YCrCb'
+    orient = 8
+    pix_per_cell = 8
     cell_per_block = 2
     hog_channel = 'ALL'
     spatial_size = (24,24)
@@ -18,16 +27,17 @@ def det_pipeline(img):
     spatial_feat = True
     hist_feat = True
     hog_feat = True
-    svc = joblib.load('svc_model1.pkl')
-
+    svc = joblib.load('svc_model4.pkl')
 
     t1 = time.time()
     draw_img = np.copy(img)
 
     windows = []
-    l_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[360, 600], xy_window=(80, 80), xy_overlap=(0.5, 0.5))
-    s_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[344, 536], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
+    l_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[444, 600], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
+    m_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[400, 688], xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+    s_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[344, 600], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
     windows.extend(l_windows)
+    windows.extend(m_windows)
     windows.extend(s_windows)
 
     hot_wins = search_windows(img, windows, svc, x_scaler, color_space=color_space, spatial_size=spatial_size, hist_bins=hist_bins, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=2, hog_channel=hog_channel, spatial_feat=True, hist_feat=True, hog_feat=True)
@@ -36,24 +46,38 @@ def det_pipeline(img):
 
     heat_map = add_heat(heat,hot_wins)
 
-    labels = label(heat_map)
+    #heat_map = apply_threshold(heat_map, 3)
 
-    draw_img = draw_labeled_bboxes(np.copy(img),labels)
+    n_frame_factor = 0.25
+    vehicles.heatmap = n_frame_factor*heat_map + (1 - n_frame_factor)*vehicles.heatmap
+    vehicles.heatmap = apply_threshold(vehicles.heatmap, 2)
 
-    window_img = draw_boxes(draw_img, hot_wins, color=(0,0,255), thick=6)
+    n_frames_avg = 14
+    vehicles.frames.append(heat_map)
+    if(len(vehicles.frames)>=14):
+        avg_frame = np.mean(np.array(vehicles.frames)[-n_frames_avg], axis = -1)
+    else:
+        avg_frame = vehicles.heatmap
+    labels = label(avg_frame)
+    if(labels is not None):
+        draw_img = draw_labeled_bboxes(np.copy(img),labels)
+    else:
+        labels = label(vehicles.heatmap)
+        draw_img = draw_labeled_bboxes(np.copy(img),labels)
+    #window_img = draw_boxes(draw_img, labels, color=(0,0,255), thick=6)
 
-    print(round(time.time() - t1,2),' seconds per image. Searching ', len(windows), ' windows.')
+    #print(round(time.time() - t1,2),' seconds per image. Searching ', len(windows), ' windows.')
 
     return draw_img
 
-image = 'test'
-for i in range(6):
-    j = 'test_images/test'+str(i+1)+'.jpg'
-    k = 'test_images/test_det'+str(i+1)+'.jpg'
-    l = 'test_images/test_det_labeled'+str(i+1)+'.jpg'
-    img = cv2.imread(j)
-    result = det_pipeline(img)
-    cv2.imwrite(k,result)
+# image = 'test'
+# for i in range(6):
+#     j = 'test_images/test'+str(i+1)+'.jpg'
+#     k = 'test_images/test_det'+str(i+1)+'.jpg'
+#     l = 'test_images/test_det_labeled'+str(i+1)+'.jpg'
+#     img = cv2.imread(j)
+#     result = det_pipeline(img)
+#     cv2.imwrite(k,result)
     #cv2.imwrite(l,labeled)
     ## Select windows from image, extract features and draw boxes on detections
     # windows = slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], xy_window=(64, 64), xy_overlap=(0.5, 0.5))

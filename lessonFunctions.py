@@ -176,8 +176,11 @@ def apply_threshold(heatmap, threshold):
 
 def draw_labeled_bboxes(img, labels):
     # Iterate through all detected cars
+    #print(labels[1])
+    #print(np.any(labels[0]>0))
     for car_number in range(1, labels[1]+1):
         # Find pixels with each car_number label value
+        #print('carnum:',car_number)
         nonzero = (labels[0] == car_number).nonzero()
         # Identify x and y values of those pixels
         nonzeroy = np.array(nonzero[0])

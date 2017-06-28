@@ -49,9 +49,9 @@ with open("notcars.txt", 'w') as f:
 #print(type(car_image[0][0][0]))
 #feature_image = cv2.cvtColor(car_image, cv2.COLOR_RGB2LUV)
 
-color_space = 'LUV'
-orient = 10
-pix_per_cell = 10
+color_space = 'YCrCb'
+orient = 8
+pix_per_cell = 8
 cell_per_block = 2
 hog_channel = 'ALL'
 spatial_size = (24,24)
@@ -84,7 +84,7 @@ x = np.vstack((car_features, notcar_features)).astype(np.float64)
 
 x_scaler = StandardScaler().fit(x)
 
-joblib.dump(x_scaler,'x_scaler_save3.pkl')
+joblib.dump(x_scaler,'x_scaler_save4.pkl')
 
 scaled_x = x_scaler.transform(x)
 
@@ -104,7 +104,7 @@ svc.fit(x_train,y_train)
 print(round(time.time() - t, 2), ' seconds to train SVC...')
 print('Test accuracy of SVC: ', round(svc.score(x_test, y_test),4))
 
-joblib.dump(svc,'svc_model3.pkl')
+joblib.dump(svc,'svc_model4.pkl')
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
 #titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
