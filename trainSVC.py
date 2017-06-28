@@ -50,8 +50,8 @@ with open("notcars.txt", 'w') as f:
 #feature_image = cv2.cvtColor(car_image, cv2.COLOR_RGB2LUV)
 
 color_space = 'LUV'
-orient = 9
-pix_per_cell = 8
+orient = 10
+pix_per_cell = 10
 cell_per_block = 2
 hog_channel = 'ALL'
 spatial_size = (24,24)
@@ -65,8 +65,10 @@ hog_feat = True
 
 
 t = time.time()
-n_samples_cars = len(cars)
-n_samples_notcars = len(notcars)
+n_samples_cars = 1000
+n_samples_notcars = 1000
+#n_samples_cars = len(cars)
+#n_samples_notcars = len(notcars)
 random_i_c = np.random.randint(0,len(cars),n_samples_cars)
 random_i_nc = np.random.randint(0,len(cars),n_samples_notcars)
 test_cars = np.array(cars)[random_i_c]
