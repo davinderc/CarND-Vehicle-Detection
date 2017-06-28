@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
+from lessonFunctions import *
 
 def search_windows(img, windows, clf, scaler, color_space='BGR',
                     spatial_size=(32, 32), hist_bins=32, orient=9,
@@ -55,25 +56,34 @@ def single_img_features(img, color_space='BGR', spatial_size=(32, 32),
     if spatial_feat == True:
         spatial_features = bin_spatial(feature_image, size=spatial_size)
         #4) Append features to list
+        #print(len(spatial_features))
         img_features.append(spatial_features)
     #5) Compute histogram features if flag is set
     if hist_feat == True:
         hist_features = color_hist(feature_image, nbins=hist_bins)
         #6) Append features to list
+        #print(len(hist_features))
         img_features.append(hist_features)
     #7) Compute HOG features if flag is set
     if hog_feat == True:
         if hog_channel == 'ALL':
             hog_features = []
             for channel in range(feature_image.shape[2]):
-                hog_features.extend(get_hog_features(feature_image[:,:,channel],
+                hog_features.append(get_hog_features(feature_image[:,:,channel],
                                     orient, pix_per_cell, cell_per_block,
                                     vis=False, feature_vec=True))
+            hog_features = np.ravel(hog_features)
         else:
             hog_features = get_hog_features(feature_image[:,:,hog_channel], orient,
                         pix_per_cell, cell_per_block, vis=False, feature_vec=True)
         #8) Append features to list
+        #print(len(hog_features))
         img_features.append(hog_features)
 
     #9) Return concatenated array of features
+    # print(type(img_features))
+    # print(len(img_features))
+    # print(len(img_features[0]))
+    # print(len(img_features[1]))
+    # print(len(img_features[2]))
     return np.concatenate(img_features)

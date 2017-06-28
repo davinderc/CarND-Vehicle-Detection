@@ -28,7 +28,7 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
     if(x_start_stop == [None,None]):
         x_start_stop = [0,img.shape[1]]
     if(y_start_stop == [None,None]):
-        y_start_stop = [0.6*img.shape[0],img.shape[0]]
+        y_start_stop = [np.int(0.6*img.shape[0]),img.shape[0]]
 
     # Compute the span of the region to be searched
     span_x = x_start_stop[1] - x_start_stop[0]

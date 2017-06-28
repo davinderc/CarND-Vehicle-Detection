@@ -1,6 +1,7 @@
 from sklearn.externals import joblib
 from slidingWindow import *
 from search_wins import *
+import time
 
 def det_pipeline(img):
 
@@ -18,15 +19,27 @@ def det_pipeline(img):
     hog_feat = True
     svc = joblib.load('svc_model1.pkl')
 
+
+    t1 = time.time()
     draw_img = np.copy(img)
 
-    windows = slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
+    windows = slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
 
-    hot_wins = search_windows(img, windows, svc, x_scaler, color_space=color_space, spatial_size=spatial_size, hist_bins=hist_bins, hist_range=(0, 256), orient=9, pix_per_cell=8, cell_per_block=2, hog_channel=0, spatial_feat=True, hist_feat=True, hog_feat=True)
+    hot_wins = search_windows(img, windows, svc, x_scaler, color_space=color_space, spatial_size=spatial_size, hist_bins=hist_bins, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=2, hog_channel=hog_channel, spatial_feat=True, hist_feat=True, hog_feat=True)
 
     window_img = draw_boxes(draw_img, hot_wins, color=(0,0,255), thick=6)
 
-    cv2.imwrite(window_img,'test_detect1.jpg')
+    print(round(time.time() - t1,2),' seconds per image. Searching ', len(windows), ' windows.')
+
+    return window_img
+
+image = 'test'
+for i in range(6):
+    j = 'test_images/test'+str(i+1)+'.jpg'
+    k = 'test_images/test_det'+str(i+1)+'.jpg'
+    img = cv2.imread(j)
+    result = det_pipeline(img)
+    cv2.imwrite(j,result)
     ## Select windows from image, extract features and draw boxes on detections
     # windows = slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
     # car_windows = []

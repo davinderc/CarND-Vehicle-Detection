@@ -95,6 +95,11 @@ def extract_features(imgs, color_space='BGR', spatial_size=(32, 32),
         features.append(np.concatenate(file_features))
     # Return list of feature vectors
     #print(np.max(features))
+    # print(type(features))
+    # print(len(features))
+    # print(len(features[0]))
+    # print(len(features[1]))
+    # print(len(features[2]))
     return features
 
 # Define a function that takes an image,
