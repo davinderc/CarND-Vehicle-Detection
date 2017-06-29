@@ -54,8 +54,8 @@ orient = 8
 pix_per_cell = 8
 cell_per_block = 2
 hog_channel = 'ALL'
-spatial_size = (24,24)
-hist_bins = 24
+spatial_size = (16,16)
+hist_bins = 16
 spatial_feat = True
 hist_feat = True
 hog_feat = True
@@ -84,7 +84,7 @@ x = np.vstack((car_features, notcar_features)).astype(np.float64)
 
 x_scaler = StandardScaler().fit(x)
 
-joblib.dump(x_scaler,'x_scaler_save4.pkl')
+joblib.dump(x_scaler,'x_scaler_save5.pkl')
 
 scaled_x = x_scaler.transform(x)
 
@@ -104,7 +104,7 @@ svc.fit(x_train,y_train)
 print(round(time.time() - t, 2), ' seconds to train SVC...')
 print('Test accuracy of SVC: ', round(svc.score(x_test, y_test),4))
 
-joblib.dump(svc,'svc_model4.pkl')
+joblib.dump(svc,'svc_model5.pkl')
 #images = [car_image, car_hog_image, notcar_image, notcar_hog_image]
 #titles = ['car', 'car HOG', 'notcar', 'notcar HOG']
 
