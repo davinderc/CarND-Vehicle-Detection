@@ -51,7 +51,7 @@ def det_pipeline(img):
     heatmaps.append(heat_map)
     heatmap_sum = sum(heatmaps)
    #print('heatmap: ', np.max(heatmap_sum))
-    thresh_heat = apply_threshold(heatmap_sum, 9)
+    thresh_heat = apply_threshold(heatmap_sum, 11)
     labels = label(thresh_heat)
 
     #n_frame_factor = 0.25
