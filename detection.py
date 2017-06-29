@@ -11,7 +11,7 @@ class VehicleTrack:
         self.frames = []
 vehicles = VehicleTrack((720,1280))
 
-heatmaps = collections.deque(maxlen=14)
+heatmaps = collections.deque(maxlen=20)
 
 #vehicles96 = VehicleTrack((96,86))
 #vehicles64 = VehicleTrack((64,64))
@@ -51,7 +51,7 @@ def det_pipeline(img):
     heatmaps.append(heat_map)
     heatmap_sum = sum(heatmaps)
    #print('heatmap: ', np.max(heatmap_sum))
-    thresh_heat = apply_threshold(heatmap_sum, 11)
+    thresh_heat = apply_threshold(heatmap_sum, 4)
     labels = label(thresh_heat)
 
     #n_frame_factor = 0.25
