@@ -36,9 +36,9 @@ def det_pipeline(img):
     draw_img = np.copy(img)
 
     windows = []
-    l_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[444, 600], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
-    m_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[400, 688], xy_window=(96, 96), xy_overlap=(0.5, 0.5))
-    s_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[344, 600], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
+    l_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[316, 600], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
+    m_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[304, 688], xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+    s_windows = slide_window(img, x_start_stop=[0, img.shape[1]], y_start_stop=[280, 600], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
     windows.extend(l_windows)
     windows.extend(m_windows)
     windows.extend(s_windows)
@@ -50,7 +50,8 @@ def det_pipeline(img):
     heat_map = add_heat(heat,hot_wins)
     heatmaps.append(heat_map)
     heatmap_sum = sum(heatmaps)
-    thresh_heat = apply_threshold(heatmap_sum, 7)
+   #print('heatmap: ', np.max(heatmap_sum))
+    thresh_heat = apply_threshold(heatmap_sum, 9)
     labels = label(thresh_heat)
 
     #n_frame_factor = 0.25
@@ -68,6 +69,7 @@ def det_pipeline(img):
     #    draw_img = draw_labeled_bboxes(np.copy(img),labels)
     #else:
         #labels = label(vehicles.heatmap)
+    #print('labels: ',len(labels))
     draw_img = draw_labeled_bboxes(np.copy(img),labels)
     #window_img = draw_boxes(draw_img, labels, color=(0,0,255), thick=6)
 
