@@ -25,8 +25,8 @@ def det_pipeline(img):
     pix_per_cell = 8
     cell_per_block = 2
     hog_channel = 'ALL'
-    spatial_size = (24,24)
-    hist_bins = 24
+    spatial_size = (16,16)
+    hist_bins = 16
     spatial_feat = True
     hist_feat = True
     hog_feat = True
