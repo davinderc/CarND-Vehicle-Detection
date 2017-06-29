@@ -39,11 +39,14 @@ with open("notcars.txt", 'w') as f:
     for fn in notcars:
         f.write(fn+'\n')
 
-#car_i = np.random.randint(0,len(cars))
-#notcar_i = np.random.randint(0,len(cars))
-
-#car_image = mpimg.imread(cars[car_i])
-#notcar_image = mpimg.imread(notcars[notcar_i])
+# car_i = np.random.randint(0,len(cars))
+# notcar_i = np.random.randint(0,len(cars))
+#
+# car_image = mpimg.imread(cars[car_i])
+# notcar_image = mpimg.imread(notcars[notcar_i])
+#
+# c_gray = cv2.cvtColor(car_image, cv2.COLOR_RGB2GRAY)
+# nc_gray = cv2.cvtColor(notcar_image, cv2.COLOR_RGB2GRAY)
 
 #print(car_image.shape)
 #print(type(car_image[0][0][0]))
@@ -60,8 +63,13 @@ spatial_feat = True
 hist_feat = True
 hog_feat = True
 
-#car_features, car_hog_image = get_hog_features(c_gray, orient, pix_per_cell, cell_per_block,vis=True, feature_vec=True)
-#notcar_features, notcar_hog_image = get_hog_features(nc_gray, orient, pix_per_cell, cell_per_block,vis=True, feature_vec=True)
+# car_features, car_hog_image = get_hog_features(c_gray, orient, pix_per_cell, cell_per_block,vis=True, feature_vec=True)
+# notcar_features, notcar_hog_image = get_hog_features(nc_gray, orient, pix_per_cell, cell_per_block,vis=True, feature_vec=True)
+#
+# plt.imsave('./output_images/car_hog.png',car_hog_image,cmap='hot')
+# plt.imsave('./output_images/car.png',car_image)
+# plt.imsave('./output_images/notcar_hog.png',notcar_hog_image,cmap='hot')
+# plt.imsave('./output_images/notcar.png',notcar_image)
 
 
 t = time.time()
