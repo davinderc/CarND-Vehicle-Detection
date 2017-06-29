@@ -19,7 +19,7 @@ heatmaps = collections.deque(maxlen=14)
 def det_pipeline(img):
     #print(img.shape)
     ## Standard scaler, parameters, and SVC model
-    x_scaler = joblib.load('x_scaler_save4.pkl')
+    x_scaler = joblib.load('x_scaler_save5.pkl')
     color_space = 'YCrCb'
     orient = 8
     pix_per_cell = 8
@@ -30,7 +30,7 @@ def det_pipeline(img):
     spatial_feat = True
     hist_feat = True
     hog_feat = True
-    svc = joblib.load('svc_model4.pkl')
+    svc = joblib.load('svc_model5.pkl')
 
     t1 = time.time()
     draw_img = np.copy(img)
